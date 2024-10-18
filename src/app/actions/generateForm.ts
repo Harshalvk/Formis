@@ -1,6 +1,7 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import Groq from "groq-sdk";
 
 export async function generateForm(
   prevState: {
@@ -23,39 +24,27 @@ export async function generateForm(
     };
   }
 
-  if (!process.env.OPENAI_API_KEY) {
-    return {
-      message: "No OpenAI API key found",
-    };
-  }
-
   const data = parse.data;
-  const promptExplanation =  "Based on the description, generate a survey object with 3 fields: name(string) for the form, description(string) of the form and a questions array where every element has 2 fields: text and the fieldType and fieldType can be of these options RadioGroup, Select, Input, Textarea, Switch; and return it in json format. For RadioGroup, and Select types also return fieldOptions array with text and value fields. For example, for RadioGroup, and Select types, the field options array can be [{text: 'Yes', value: 'yes'}, {text: 'No', value: 'no'}] and for Input, Textarea, and Switch types, the field options array can be empty. For example, for Input, Textarea, and Switch types, the field options array can be []";
+  const promptExplanation =
+    "Based on the description, generate a survey object with 3 fields: name(string) for the form, description(string) of the form and a questions array where every element has 2 fields: text and the fieldType and fieldType can be of these options RadioGroup, Select, Input, Textarea, Switch; and return it in json format. For RadioGroup, and Select types also return fieldOptions array with text and value fields. For example, for RadioGroup, and Select types, the field options array can be [{text: 'Yes', value: 'yes'}, {text: 'No', value: 'no'}] and for Input, Textarea, and Switch types, the field options array can be empty. For example, for Input, Textarea, and Switch types, the field options array can be []";
 
   try {
-    const response = await fetch("https://api.openai.com/v1/completions", {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-      },
-      method: "POST",
-      body: JSON.stringify({
-        model: "gpt-3.5-turbo-instruct",
-        messages: [
-          {
-            role: "system",
-            content: `${data.description} ${promptExplanation}`,
-          },
-        ],
-      }),
+    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+    const response = await groq.chat.completions.create({
+      model: "llama3-8b-8192",
+      messages: [
+        {
+          role: "user",
+          content: `${data.description} ${promptExplanation}`,
+        },
+      ],
     });
 
-    const json = await response.json();
-
     revalidatePath("/");
+    console.log(response.choices[0]?.message?.content);
     return {
       message: "success",
-      data: json,
+      data: response.choices[0]?.message?.content || "",
     };
   } catch (error) {
     console.log(error);
