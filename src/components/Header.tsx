@@ -3,6 +3,7 @@ import { auth, signIn, signOut } from "@/auth";
 import { Button } from "./ui/button";
 import Image from "next/image";
 import Link from "next/link";
+import { ModeToggle } from "./ModeToggle";
 
 type Props = {};
 
@@ -30,22 +31,25 @@ const Header = async (props: Props) => {
             Formis
           </h1>
         </div>
-        {session?.user?.name && session.user.image ? (
-          <div className="flex items-center gap-2">
-            <Image
-              src={session.user.image as string}
-              alt="User profile"
-              className=""
-              width={40}
-              height={40}
-            />
-            <SignOut />
-          </div>
-        ) : (
-          <Link href={"/api/auth/signin"}>
-            <Button variant={"link"}>Sign in</Button>
-          </Link>
-        )}
+        <div>
+          {session?.user?.name && session.user.image ? (
+            <div className="flex items-center gap-2">
+              <Image
+                src={session.user.image as string}
+                alt="User profile"
+                className=""
+                width={40}
+                height={40}
+              />
+              <SignOut />
+            </div>
+          ) : (
+            <Link href={"/api/auth/signin"}>
+              <Button variant={"link"}>Sign in</Button>
+            </Link>
+          )}
+          <ModeToggle/>
+        </div>
       </nav>
     </header>
   );
