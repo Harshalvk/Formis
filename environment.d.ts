@@ -3,6 +3,8 @@ declare global {
     interface ProcessEnv {
       NODE_ENV: "development" | "production";
       GROQ_API_KEY: string;
+      GOOGLE_CLIENT_ID: string;
+      GOOGLE_CLIENT_SECRET: string;
     }
   }
 }
