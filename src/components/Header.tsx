@@ -4,21 +4,9 @@ import { Button } from "./ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { ModeToggle } from "./ModeToggle";
+import UserAccount from "./UserAccount";
 
 type Props = {};
-
-function SignOut() {
-  return (
-    <form
-      action={async () => {
-        "use server";
-        await signOut();
-      }}
-    >
-      <Button type="submit">Sign out</Button>
-    </form>
-  );
-}
 
 const Header = async (props: Props) => {
   const session = await auth();
@@ -31,24 +19,17 @@ const Header = async (props: Props) => {
             Formis
           </h1>
         </div>
-        <div>
-          {session?.user?.name && session.user.image ? (
+        <div className="flex gap-2">
+          <ModeToggle />
+          {session?.user ? (
             <div className="flex items-center gap-2">
-              <Image
-                src={session.user.image as string}
-                alt="User profile"
-                className=""
-                width={40}
-                height={40}
-              />
-              <SignOut />
+              <UserAccount user={session.user} />
             </div>
           ) : (
             <Link href={"/api/auth/signin"}>
               <Button variant={"link"}>Sign in</Button>
             </Link>
           )}
-          <ModeToggle/>
         </div>
       </nav>
     </header>
