@@ -13,6 +13,7 @@ import { Textarea } from "./ui/textarea";
 import { generateForm } from "@/actions/generateForm";
 import { useFormState, useFormStatus } from "react-dom";
 import { LoaderCircle } from "lucide-react";
+import { navigate } from "@/app/actions/navigateToForm";
 
 type Props = {};
 
@@ -42,6 +43,7 @@ const FormGenerator = (props: Props) => {
   useEffect(() => {
     if (state.message === "success") {
       setOpen(false);
+      navigate(state.data.formId)
     }
     console.log(state.data);
   }, [state.message]);
