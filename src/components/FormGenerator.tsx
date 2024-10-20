@@ -3,10 +3,8 @@ import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "./ui/button";
@@ -54,7 +52,9 @@ const FormGenerator = (props: Props) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <Button onClick={onFormCreate}>Create Form</Button>
+      <Button onClick={onFormCreate} className="mt-6">
+        Create Form
+      </Button>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Create new form</DialogTitle>
