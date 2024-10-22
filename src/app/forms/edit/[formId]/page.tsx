@@ -40,7 +40,7 @@ const page = async ({
 
   return (
     <>
-      <Form form={form} />
+      <Form form={form} editMode={true} />
     </>
   );
 };
