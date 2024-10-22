@@ -2,7 +2,7 @@
 import { db } from "@/db";
 import { forms, questions as dbQuestions, fieldOptions } from "@/db/schema";
 import { auth } from "@/auth";
-import { InferInsertModel } from "drizzle-orm";
+import { eq, InferInsertModel } from "drizzle-orm";
 
 type Form = InferInsertModel<typeof forms>;
 type Question = InferInsertModel<typeof dbQuestions>;
@@ -57,4 +57,8 @@ export async function saveForm(data: SaveFormData) {
   });
 
   return formId;
+}
+
+export async function publishForm(formId: number) {
+  await db.update(forms).set({ published: true }).where(eq(forms.id, formId));
 }
