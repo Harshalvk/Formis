@@ -12,10 +12,10 @@ import {
 export type Icon = LucideIcon;
 export const Icons = {
   library: Library,
-  LineChart: LineChart,
+  lineChart: LineChart,
   pieChart: PieChart,
-  Settings2: Settings2,
+  settings2: Settings2,
   settings: Settings,
-  UserRoundCog: UserRoundCog,
+  userRoundCog: UserRoundCog,
   list: List
 };
