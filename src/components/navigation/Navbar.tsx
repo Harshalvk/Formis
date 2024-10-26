@@ -25,7 +25,7 @@ const Navbar = ({ items }: DashboradNavProps) => {
             <Link key={index} href={item.disabled ? "/" : `${item.href}`}>
               <span
                 className={cn(
-                  "flex items-center px-4 py-3 text-sm font-medium hover:bg-accent hover:text-accent-foreground",
+                  "group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground",
                   isActive ? "bg-accent" : "transparent",
                   item.disabled
                     ? "cursor-not-allowed opacity-80"
