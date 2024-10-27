@@ -13,7 +13,7 @@ const Header = async (props: Props) => {
 
   return (
     <header className="border-b bottom-1">
-      <nav className="flex p-2 items-center justify-between">
+      <nav className="container flex p-2 items-center justify-between">
         <div>
           <h1 className="font-semibold text-lg lg:text-3xl md:text-2xl">
             Formis
