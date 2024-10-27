@@ -42,10 +42,10 @@ export default function AdminLayout({
     ],
   };
   return (
-    <div className="flex min-h-screen flex-col space-y-6">
+    <div className="flex min-h-screen flex-col">
       <Header />
-      <div className="constainer grid gap-12 md:grid-cols-[200px_1fr] flex-1">
-        <aside className="hidden w-[200px] flex-col md:flex pr-2 border-r justify-between">
+      <div className=" grid md:grid-cols-[200px_1fr] flex-1">
+        <aside className="hidden w-[200px] flex-col md:flex px-2 py-2 border-r justify-between ">
           <Navbar items={dashboradConfig.sidebarNav} />
         </aside>
         <main className="flex w-full flex-1 flex-col overflow-hidden">
