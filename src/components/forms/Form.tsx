@@ -17,6 +17,9 @@ import { Button } from "../ui/button";
 import FormField from "./FormField";
 import { publishForm } from "@/app/actions/mutateForm";
 import FormPublishSuccess from "./FormPublishSuccess";
+import { submitAnswers, type Answer } from "@/app/actions/submitAnswers";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type Props = {
   form: Form;
@@ -32,6 +35,7 @@ interface Form extends FormSelectMode {
 }
 
 const Form = (props: Props) => {
+  const router = useRouter();
   const form = useForm();
   const { editMode } = props;
   const [successDialogOpen, setSuccessDialogOpen] = useState(false);
@@ -45,8 +49,41 @@ const Form = (props: Props) => {
     if (editMode) {
       await publishForm(props.form.id);
       setSuccessDialogOpen(true);
+    } else {
+      let answers: Answer[] = [];
+      for (const [questionId, value] of Object.entries(data)) {
+        const id = parseInt(questionId.replace("question_", ""));
+        let fieldOptionsId = null;
+        let textValue = null;
+
+        if (typeof value == "string" && value.includes("answerId_")) {
+          fieldOptionsId = parseInt(value.replace("answerId_", ""));
+        } else {
+          textValue = value as string;
+        }
+
+        answers.push({
+          questionId: id,
+          fieldOptionsId,
+          value: textValue,
+        });
+
+        try {
+          const response = await submitAnswers({
+            formId: props.form.id,
+            answers,
+          });
+          if (response) {
+            router.push("/forms/submit-success");
+          }
+        } catch (error) {
+          console.error(error);
+          toast("An error occurred while submitting the form.");
+        }
+      }
     }
   };
+
   return (
     <div>
       <h1 className="text-2xl font-semibold py-3">{props.form.name}</h1>
