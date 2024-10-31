@@ -68,6 +68,24 @@ const Form = (props: Props) => {
           value: textValue,
         });
 
+        const baseUrl =
+          process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+
+        const response = await fetch(`${baseUrl}/api/form/new`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ formId: props.form.id, answers }),
+        });
+
+        if (response.status === 200) {
+          router.push("/form/success");
+        } else {
+          console.log("Error submitting form");
+          alert("Error submitting form. Please try again later");
+        }
+
         try {
           const response = await submitAnswers({
             formId: props.form.id,
