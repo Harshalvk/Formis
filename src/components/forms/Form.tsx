@@ -68,7 +68,7 @@ const Form = (props: Props) => {
           value: textValue,
         });
       }
-      
+
       const baseUrl =
         process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
@@ -81,7 +81,7 @@ const Form = (props: Props) => {
       });
 
       if (response.status === 200) {
-        router.push("/form/success");
+        router.push("/forms/success");
       } else {
         console.log("Error submitting form");
         toast.error("Error submitting form. Please try again later");
