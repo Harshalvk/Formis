@@ -2,6 +2,7 @@ import React from "react";
 import { getUserForms } from "@/app/actions/getUserForms";
 import { InferSelectModel } from "drizzle-orm";
 import { forms } from "@/db/schema";
+import FormsPicker from "@/components/forms/FormsPicker";
 
 type Props = {};
 
@@ -22,6 +23,7 @@ const page = async (props: Props) => {
   return (
     <div>
       Results: Dropdown & Tables
+      <FormsPicker options={selectOptions} />
     </div>
   );
 };
