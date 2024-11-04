@@ -55,8 +55,8 @@ export default function AdminLayout({
               <FormGenerator />
             </SessionProvider>
           </header>
-          <hr className="my-4" />
-          {children}
+          <hr className="" />
+          <div className="m-6">{children}</div>
         </main>
       </div>
     </div>
