@@ -20,6 +20,9 @@ const Header = async (props: Props) => {
           </h1>
         </div>
         <div className="flex gap-2">
+          <Link href="/view-forms">
+            <Button variant={"link"}>Dashboard</Button>
+          </Link>
           <ModeToggle />
           {session?.user ? (
             <div className="flex items-center gap-2">
