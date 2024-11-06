@@ -40,24 +40,19 @@ const FormsPicker = ({ options }: FormsPickerProps) => {
   return (
     <div className="flex gap-2 items-center">
       <Label className="font-bold">Select a form</Label>
-      <Select value={formId}>
+      <Select
+        value={formId}
+        onValueChange={(value) => {
+          router.push(pathName + "?" + createQueryString("formId", value));
+        }}
+      >
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder={options[0].lable} />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
             {options.map((option) => (
-              <SelectItem
-                key={option.value}
-                value={option.value.toString()}
-                onChange={() =>
-                  router.push(
-                    pathName +
-                      "?" +
-                      createQueryString("id", option.value.toString())
-                  )
-                }
-              >
+              <SelectItem key={option.value} value={option.value.toString()}>
                 {option.lable}
               </SelectItem>
             ))}
