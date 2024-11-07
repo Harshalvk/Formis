@@ -27,7 +27,6 @@ const page = async ({
 
   return (
     <div>
-      Results:
       <FormsPicker options={selectOptions} />
       <ResultDisplay
         formId={
