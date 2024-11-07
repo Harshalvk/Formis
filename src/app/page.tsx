@@ -9,8 +9,9 @@ export default async function Home() {
     <>
       <Header />
       <main className="flex min-h-screen flex-col items-center">
-        <FormGenerator />
-        <FormList forms={forms} />
+        <h1 className="text-3xl font-bold flex h-screen items-center justify-center">
+          Landing Page Soon...
+        </h1>
       </main>
     </>
   );
