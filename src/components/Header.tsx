@@ -12,7 +12,7 @@ const Header = async (props: Props) => {
   const session = await auth();
 
   return (
-    <header className="border-b bottom-1">
+    <header className="border-b bottom-1 sticky top-0 z-50 bg-white/30 dark:bg-transparent backdrop-blur-md">
       <nav className="container flex p-2 items-center justify-between">
         <div>
           <h1 className="font-semibold text-lg lg:text-3xl md:text-2xl">
