@@ -16,6 +16,9 @@ const config: Config = {
       },
     },
     extend: {
+      backgroundImage: {
+        "gradient-to-c": "radial-gradient(var(--tw-gradient-stops))",
+      },
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
