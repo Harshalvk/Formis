@@ -1,17 +1,12 @@
-import FormGenerator from "@/components/FormGenerator";
-import FormList from "@/components/forms/FormList";
 import Header from "@/components/Header";
-import { db } from "@/db";
+import LandingPage from "@/components/landing-page/LandingPage";
 
-export default async function Home() {
-  const forms = await db.query.forms.findMany();
+export default function Home() {
   return (
     <>
       <Header />
-      <main className="flex min-h-screen flex-col items-center">
-        <h1 className="text-3xl font-bold flex h-screen items-center justify-center">
-          Landing Page Soon...
-        </h1>
+      <main className="flex min-h-screen flex-col items-center z-10">
+        <LandingPage />
       </main>
     </>
   );
