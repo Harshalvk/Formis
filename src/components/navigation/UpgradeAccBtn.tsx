@@ -10,7 +10,6 @@ const UpgradeAccBtn = async (props: Props) => {
   const forms = await getUserForms();
   const formCount = forms.length;
   const percent = (formCount / MAX_FREE_FORMS) * 100;
-  console.log(formCount);
 
   return (
     <div className="p-4 mb-4 text-sm">
