@@ -6,7 +6,9 @@ declare global {
       GOOGLE_CLIENT_ID: string;
       GOOGLE_CLIENT_SECRET: string;
       DATABASE_URL: string;
-      BASE_URL: string;
+      NEXT_PUBLIC_BASE_URL: string;
+      NEXT_PUBLIC_PUBLISHABLE_KEY: string;
+      STRIPE_SECRET_KEY: string;
     }
   }
 }
