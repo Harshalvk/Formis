@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import { getStripe } from "@/lib/stripe-client";
-import { useSession, signIn } from "next-auth/react";
 import { Button } from "../ui/button";
 import { useRouter } from "next/router";
 
