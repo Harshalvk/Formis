@@ -1,18 +1,17 @@
 "use client";
-import React from "react";
 import { getStripe } from "@/lib/stripe-client";
-import { Button } from "../ui/button";
-import { useRouter } from "next/router";
+import React from "react";
+import { useRouter } from "next/navigation";
 
 type Props = {
   userId?: string;
-  price: number;
+  price: string;
 };
 
 const SubscribeBtn = ({ userId, price }: Props) => {
   const router = useRouter();
-
-  const handleCheckout = async (price: number) => {
+  
+  const handleCheckout = async (price: string) => {
     if (!userId) {
       router.push("/login");
     }
@@ -26,18 +25,18 @@ const SubscribeBtn = ({ userId, price }: Props) => {
         body: JSON.stringify({ price }),
       }).then((res) => res.json());
 
-      console.log("sessionId: ", sessionId);
+      console.log("sessionId:", sessionId);
       const stripe = await getStripe();
       stripe?.redirectToCheckout({ sessionId });
     } catch (error) {
-      console.error("Error", error);
+      console.error("Error:", error);
     }
   };
 
   return (
-    <Button variant={"link"} onClick={() => handleCheckout(price)}>
+    <button className="underline" onClick={() => handleCheckout(price)}>
       Upgrade your plan
-    </Button>
+    </button>
   );
 };
 
