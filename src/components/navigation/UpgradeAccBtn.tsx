@@ -21,7 +21,7 @@ const UpgradeAccBtn = async (props: Props) => {
         {formCount} out of {MAX_FREE_FORMS} forms generated
       </p>
       <p>
-        <SubscribeBtn userId={userId} price={22} />
+        <SubscribeBtn userId={userId} price={"22"} />
         for unlimited forms.
       </p>
     </div>
