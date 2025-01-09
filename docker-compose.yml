@@ -1,0 +1,16 @@
+version: "1.0"
+services:
+  formis-db:
+    image: postgres
+    restart: always
+    container_name: formis-db
+    ports:
+      - 5434:5432
+    environment:
+      - POSTGRES_PASSWORD=harshal
+      - PGDATA=/data/postgres-formis
+    volumes:
+      - postgres-formis:/data/postgres-formis
+
+volumes:
+  postgres-formis:
