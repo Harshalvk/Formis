@@ -54,7 +54,7 @@ const FormGenerator = (props: Props) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <Button onClick={onFormCreate}>
+      <Button onClick={onFormCreate} className="z-50">
         Create Form
       </Button>
       <DialogContent className="sm:max-w-[425px]">
