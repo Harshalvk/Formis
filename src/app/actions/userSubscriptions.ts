@@ -4,20 +4,28 @@ import { db } from "@/db/index";
 import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
-export async function createSubscription({ userId }: { userId: string }) {
+export async function createSubscription({
+  stripeCustomerId,
+}: {
+  stripeCustomerId: string;
+}) {
   await db
     .update(users)
     .set({
       subscribed: true,
     })
-    .where(eq(users.id, userId));
+    .where(eq(users.stripeCustomerId, stripeCustomerId));
 }
 
-export async function deleteSubscription({ userId }: { userId: string }) {
+export async function deleteSubscription({
+  stripeCustomerId,
+}: {
+  stripeCustomerId: string;
+}) {
   await db
     .update(users)
     .set({
       subscribed: false,
     })
-    .where(eq(users.id, userId));
+    .where(eq(users.stripeCustomerId, stripeCustomerId));
 }
