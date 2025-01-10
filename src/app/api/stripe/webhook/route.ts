@@ -34,13 +34,13 @@ export async function POST(req: Request) {
     switch (event.type) {
       case "customer.subscription.created": {
         await createSubscription({
-          userId: data.customer as string,
+          stripeCustomerId: data.customer as string,
         });
         break;
       }
       case "customer.subscription.deleted": {
         await deleteSubscription({
-          userId: data.customer as string,
+          stripeCustomerId: data.customer as string,
         });
         break;
       }

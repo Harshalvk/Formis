@@ -4,15 +4,23 @@ import { MAX_FREE_FORMS } from "@/lib/utils";
 import ProgressBar from "../ProgressBar";
 import SubscribeBtn from "../Subscription/SubscribeBtn";
 import { auth } from "@/auth";
+import { getUserSubscription } from "@/app/actions/userSubscriptions";
 
 type Props = {};
 
 const UpgradeAccBtn = async (props: Props) => {
+  const session = await auth();
+  const userId = session?.user?.id;
+  if (!userId) {
+    return null;
+  }
+  const subscription = await getUserSubscription({ userId });
+  if (subscription) {
+    return null;
+  }
   const forms = await getUserForms();
   const formCount = forms.length;
   const percent = (formCount / MAX_FREE_FORMS) * 100;
-  const session = await auth();
-  const userId = session?.user?.id;
 
   return (
     <div className="p-4 mb-4 text-sm">

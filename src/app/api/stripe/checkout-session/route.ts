@@ -77,5 +77,12 @@ export async function POST(req: Request) {
     }
   } catch (error: any) {
     console.error("Error creating checkout session", error);
+    return new Response(
+      JSON.stringify({
+        error: "Internal server error",
+        details: error.message,
+      }),
+      { status: 500 }
+    );
   }
 }
