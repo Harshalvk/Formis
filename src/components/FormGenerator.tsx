@@ -12,7 +12,7 @@ import { Textarea } from "./ui/textarea";
 
 import { generateForm } from "@/actions/generateForm";
 import { useFormState, useFormStatus } from "react-dom";
-import { LoaderCircle } from "lucide-react";
+import { LoaderCircle, Lock, Plus } from "lucide-react";
 import { navigate } from "@/app/actions/navigateToForm";
 
 type Props = {};
@@ -43,7 +43,7 @@ const FormGenerator = (props: Props) => {
   useEffect(() => {
     if (state.message === "success") {
       setOpen(false);
-      navigate(state.data.formId)
+      navigate(state.data.formId);
     }
     console.log(state.data);
   }, [state.message]);
@@ -55,6 +55,7 @@ const FormGenerator = (props: Props) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <Button onClick={onFormCreate} className="z-50">
+        <Plus className="w-4 h-4 mr-2" />
         Create Form
       </Button>
       <DialogContent className="sm:max-w-[425px]">
