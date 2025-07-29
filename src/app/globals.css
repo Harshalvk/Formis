@@ -11,6 +11,18 @@ body {
     text-wrap: balance;
   }
 }
+@layer utilities {
+  /* Hide scrollbar in WebKit-based browsers */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar in other browsers */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}
 
 @layer base {
   :root {
