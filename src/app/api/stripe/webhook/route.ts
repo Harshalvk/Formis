@@ -25,7 +25,7 @@ export async function POST(req: Request) {
   const event = stripe.webhooks.constructEvent(
     body,
     sig,
-    process.env.STRIPE_WEBHOOK_SECRET!
+    process.env.STRIPE_WEBHOOK_SECRET!,
   );
 
   const data = event.data.object as Stripe.Subscription;

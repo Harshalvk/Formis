@@ -31,11 +31,11 @@ const FormField = ({ element, value, onChange }: Props) => {
   const components = {
     Input: () => <Input type="text" onChange={onChange} />,
     Switch: () => <Switch />,
-    Textarea: () => <Textarea />,
+    Textarea: () => <Textarea onChange={(e) => onChange(e.target.value)} />,
     Select: () => (
       <Select onValueChange={onChange}>
         <SelectTrigger>
-          <SelectValue>Select an option</SelectValue>
+          <SelectValue placeholder="Select and option" />
         </SelectTrigger>
         <SelectContent>
           {element.fieldOptions.map((option, index) => (

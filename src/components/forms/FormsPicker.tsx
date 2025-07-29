@@ -34,7 +34,7 @@ const FormsPicker = ({ options }: FormsPickerProps) => {
 
       return params.toString();
     },
-    [searchParams]
+    [searchParams],
   );
 
   return (

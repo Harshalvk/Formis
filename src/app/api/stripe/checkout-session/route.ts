@@ -51,7 +51,8 @@ export async function POST(req: Request) {
 
   try {
     const session = await stripe.checkout.sessions.create({
-      success_url: `${baseUrl}/payment/success`,
+      success_url: `${baseUrl}/view-forms?success=true`,
+      cancel_url: `${baseUrl}/view-forms?success=false`,
       customer: customer.id,
       payment_method_types: ["card"],
       line_items: [
@@ -72,7 +73,7 @@ export async function POST(req: Request) {
         JSON.stringify({ error: "Failed to create session" }),
         {
           status: 500,
-        }
+        },
       );
     }
   } catch (error: any) {
@@ -82,7 +83,7 @@ export async function POST(req: Request) {
         error: "Internal server error",
         details: error.message,
       }),
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

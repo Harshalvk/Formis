@@ -6,9 +6,7 @@ import SubscribeBtn from "../Subscription/SubscribeBtn";
 import { auth } from "@/auth";
 import { getUserSubscription } from "@/app/actions/userSubscriptions";
 
-type Props = {};
-
-const UpgradeAccBtn = async (props: Props) => {
+const UpgradeAccBtn = async () => {
   const session = await auth();
   const userId = session?.user?.id;
   if (!userId) {
@@ -31,7 +29,7 @@ const UpgradeAccBtn = async (props: Props) => {
       <p>
         <SubscribeBtn
           userId={userId}
-          price={"price_1QfKluSCgolP1UzGx5pdLdq8"}
+          price={"price_1RqCxKSD8gEaTANG11BEsv4j"}
         />{" "}
         for unlimited forms.
       </p>

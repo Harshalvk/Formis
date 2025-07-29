@@ -45,12 +45,11 @@ const Form = (props: Props) => {
   };
 
   const onSubmit = async (data: any) => {
-    console.log(data);
     if (editMode) {
       await publishForm(props.form.id);
       setSuccessDialogOpen(true);
     } else {
-      let answers: Answer[] = [];
+      const answers: Answer[] = [];
       for (const [questionId, value] of Object.entries(data)) {
         const id = parseInt(questionId.replace("question_", ""));
         let fieldOptionsId = null;
@@ -91,12 +90,14 @@ const Form = (props: Props) => {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold py-3">{props.form.name}</h1>
-      <h3 className="text-gray-300">{props.form.description}</h3>
+      <div className="p-3">
+        <h1 className="text-2xl font-semibold py-3">{props.form.name}</h1>
+        <h3 className="text-muted-foreground">{props.form.description}</h3>
+      </div>
       <FormComponent {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="grid w-full max-w-3xl items-center gap-6 my-4"
+          className="grid w-full max-w-3xl items-center gap-6 my-4 p-3"
         >
           {props.form.questions.map(
             (question: QuestionWithOptionMode, index: number) => {

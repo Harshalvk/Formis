@@ -35,7 +35,7 @@ const page = async ({
   }
 
   if (!form) {
-    return <div>You don't have any form</div>;
+    return <div>You don&apos;t have any form</div>;
   }
 
   return (
