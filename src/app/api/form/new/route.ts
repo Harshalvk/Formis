@@ -17,11 +17,13 @@ export async function POST(request: Request): Promise<Response> {
 
   await db.transaction(async (tx) => {
     for (const answer of data.answers) {
-      const [{ answerId }] = await tx
+      await tx
         .insert(dbAnswers)
         .values({
+          value: answer.value,
           formSubmissionId: insertedId,
-          ...answer,
+          questionId: answer.questionId,
+          fieldOptionsId: answer.fieldOptionsId,
         })
         .returning({
           answerId: dbAnswers.id,
@@ -31,3 +33,4 @@ export async function POST(request: Request): Promise<Response> {
 
   return Response.json({ formSubmissionsId: insertedId }, { status: 200 });
 }
+
