@@ -50,7 +50,7 @@ export async function saveForm(data: SaveFormData) {
             text: option.text,
             value: option.value,
             questionId,
-          }))
+          })),
         );
       }
     }

@@ -5,15 +5,13 @@ import { forms } from "@/db/schema";
 import FormsPicker from "@/components/forms/FormsPicker";
 import ResultDisplay from "@/components/ResultDisplay";
 
-type Props = {};
-
 const page = async ({
   searchParams,
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) => {
   const userForms: Array<InferSelectModel<typeof forms>> = await getUserForms();
-  
+
   if (!userForms?.length || userForms.length === 0) {
     return <div>No forms found</div>;
   }

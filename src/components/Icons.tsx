@@ -17,5 +17,5 @@ export const Icons = {
   settings2: Settings2,
   settings: Settings,
   userRoundCog: UserRoundCog,
-  list: List
+  list: List,
 };

@@ -8,7 +8,7 @@ export async function generateForm(
   prevState: {
     message: string;
   },
-  formData: FormData
+  formData: FormData,
 ) {
   const schema = z.object({
     description: z.string().min(1),
@@ -32,7 +32,7 @@ export async function generateForm(
   try {
     const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
     const response = await groq.chat.completions.create({
-      model: "llama3-8b-8192",
+      model: "moonshotai/kimi-k2-instruct",
       messages: [
         {
           role: "user",
@@ -41,7 +41,15 @@ export async function generateForm(
       ],
     });
 
-    const paresRes = JSON.parse(response.choices[0]?.message.content!);
+    console.log("AI: RESPONSE", response.choices[0].message);
+
+    if (!response.choices[0].message["content"]) {
+      return {
+        message: "failed",
+      };
+    }
+
+    const paresRes = JSON.parse(response.choices[0].message["content"]);
 
     const dbFormId = await saveForm({
       name: paresRes.name,
@@ -52,7 +60,7 @@ export async function generateForm(
     revalidatePath("/");
     return {
       message: "success",
-      data: {formId: dbFormId},
+      data: { formId: dbFormId },
     };
   } catch (error) {
     console.log(error);

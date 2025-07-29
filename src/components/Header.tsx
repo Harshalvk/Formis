@@ -1,14 +1,10 @@
 import React from "react";
-import { auth, signIn, signOut } from "@/auth";
+import { auth } from "@/auth";
 import { Button } from "./ui/button";
-import Image from "next/image";
 import Link from "next/link";
 import { ModeToggle } from "./ModeToggle";
 import UserAccount from "./UserAccount";
-
-type Props = {};
-
-const Header = async (props: Props) => {
+const Header = async () => {
   const session = await auth();
 
   return (
