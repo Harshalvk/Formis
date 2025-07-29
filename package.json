@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier \"**/*.{ts,tsx,js,json}\" --ignore-path .gitignore",
+    "format:check": "bun format --check",
+    "format:write": "bun format --write",
+    "validate": "bun format:write && bun lint && bun tsc"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.7.1",
@@ -31,6 +35,7 @@
     "next-themes": "^0.3.0",
     "pg": "^8.13.0",
     "postgres": "^3.4.4",
+    "prettier": "^3.6.2",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.53.0",
