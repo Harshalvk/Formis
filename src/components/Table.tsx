@@ -8,6 +8,15 @@ import {
   questions,
 } from "@/db/schema";
 import { InferSelectModel } from "drizzle-orm";
+import {
+  Table as ShadcnTable,
+  TableBody,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 import {
   createColumnHelper,
@@ -39,24 +48,26 @@ const columnHelper = createColumnHelper<any>();
 
 export function Table(props: TableProps) {
   const { data } = props;
+
   const columns = [
     columnHelper.accessor("id", {
+      header: () => <p>ID</p>,
       cell: (info) => info.getValue(),
     }),
-    ...props.columns.map((question: any, index: number) => {
+    ...props.columns.map((question: Question, index: number) => {
       return columnHelper.accessor(
         (row) => {
-          let answer = row.answers.find(
-            (answer: any) => answer.questionId === question.id
+          const answer: Answer = row.answers.find(
+            (answer: Answer) => answer.questionId === question.id,
           );
 
-          return answer.fieldOptions ? answer.fieldOption.text : answer.value;
+          return answer.fieldOption ? answer.fieldOption.text : answer.value;
         },
         {
           header: () => question.text,
           id: question.id.toString(),
-          cell: (info) => info.renderValue(),
-        }
+          cell: (info) => <p>{info.renderValue()}</p>,
+        },
       );
     }),
   ];
@@ -67,54 +78,56 @@ export function Table(props: TableProps) {
     getCoreRowModel: getCoreRowModel(),
   });
 
+  console.log("TABLE_DATA::", data);
+
   return (
     <div className="p-2 mt-4">
-      <div className="shadow overflow-hidden border border-gray-200 sm:rounded-lg">
-        <table>
-          <thead>
+      <div className="shadow overflow-hidden border sm:rounded-lg">
+        <ShadcnTable>
+          <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="border-b">
+              <TableRow key={headerGroup.id} className="border-b">
                 {headerGroup.headers.map((header) => (
-                  <th key={header.id} className="text-left">
+                  <TableHead key={header.id} className="text-left">
                     {header.isPlaceholder
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
-                          header.getContext()
+                          header.getContext(),
                         )}
-                  </th>
+                  </TableHead>
                 ))}
-              </tr>
+              </TableRow>
             ))}
-          </thead>
-          <tbody className="divide-y divide-gray-200">
+          </TableHeader>
+          <TableBody>
             {table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className="py-2">
+              <TableRow key={row.id} className="py-2">
                 {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="p-3">
+                  <TableCell key={cell.id} className="p-3">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
+                  </TableCell>
                 ))}
-              </tr>
+              </TableRow>
             ))}
-          </tbody>
-          <tfoot>
+          </TableBody>
+          <TableFooter>
             {table.getFooterGroups().map((footerGroup) => (
-              <tr key={footerGroup.id}>
+              <TableRow key={footerGroup.id}>
                 {footerGroup.headers.map((header) => (
-                  <th key={header.id}>
+                  <TableHead key={header.id}>
                     {header.isPlaceholder
                       ? null
                       : flexRender(
                           header.column.columnDef.footer,
-                          header.getContext()
+                          header.getContext(),
                         )}
-                  </th>
+                  </TableHead>
                 ))}
-              </tr>
+              </TableRow>
             ))}
-          </tfoot>
-        </table>
+          </TableFooter>
+        </ShadcnTable>
       </div>
       <div className="h-4" />
     </div>
