@@ -1,10 +1,10 @@
-import Header from "@/components/Header";
 import LandingPage from "@/components/landing-page/LandingPage";
+import Navbar from "@/components/landing-page/Navbar";
 
 export default function Home() {
   return (
     <>
-      <Header />
+      <Navbar />
       <LandingPage />
     </>
   );
