@@ -4,7 +4,7 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from "@/components/ui/dialog";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
@@ -17,6 +17,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { promptSchema } from "@/lib/validator/prompt.vaildator";
 import { Form, FormField } from "@/components/ui/form";
+import { formPrompts } from "@/lib/constants";
 
 export function SubmitButton() {
   const { pending } = useFormStatus();
@@ -30,15 +31,7 @@ export function SubmitButton() {
   );
 }
 
-const FormGenerator = ({
-  chat,
-  textareaValue,
-  setTextareaValue,
-}: {
-  chat?: boolean;
-  textareaValue: string;
-  setTextareaValue: React.Dispatch<React.SetStateAction<string>>;
-}) => {
+const FormGenerator = ({ chat }: { chat?: boolean }) => {
   const [open, setOpen] = useState(false);
   const [placeholder, setPlaceholder] = useState("");
   const [phraseIndex, setPhraseIndex] = useState(0);
@@ -48,9 +41,11 @@ const FormGenerator = ({
   const form = useForm<z.infer<typeof promptSchema>>({
     resolver: zodResolver(promptSchema),
     defaultValues: {
-      prompt: "",
-    },
+      prompt: ""
+    }
   });
+
+  const { setValue } = form;
 
   const onFormCreate = () => {
     setOpen(true);
@@ -67,7 +62,7 @@ const FormGenerator = ({
     "event RSVP form...",
     "survey form...",
     "job application form...",
-    "contact form...",
+    "contact form..."
   ];
 
   useEffect(() => {
@@ -119,8 +114,6 @@ const FormGenerator = ({
                 render={({ field }) => (
                   <Textarea
                     {...field}
-                    value={textareaValue}
-                    onChange={(e) => setTextareaValue(e.target.value)}
                     placeholder={`Ask Formis to create a ${placeholder}`}
                     spellCheck={false}
                     className="flex-1 font-semibold w-full text-sm md:text-base border-none h-28 resize-none rounded-xl focus-visible:ring-0 focus-visible:ring-offset-0 text-foreground/80"
@@ -138,6 +131,23 @@ const FormGenerator = ({
               </div>
             </form>
           </Form>
+          <div className="w-full overflow-x-auto px-4 mt-4 no-scrollbar">
+            <div className="flex items-center justify-center gap-2 min-w-max">
+              {formPrompts.map((formPrompt, index) => {
+                const Icon = formPrompt.icon;
+                return (
+                  <p
+                    key={index}
+                    onClick={() => setValue("prompt", formPrompt.prompt)}
+                    className="text-xs whitespace-nowrap hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-all py-1.5 px-3 font-semibold rounded-full border cursor-pointer flex items-center gap-2 "
+                  >
+                    <Icon size={17} />
+                    {formPrompt.title}
+                  </p>
+                );
+              })}
+            </div>
+          </div>
         </div>
       ) : (
         <Dialog open={open} onOpenChange={setOpen}>

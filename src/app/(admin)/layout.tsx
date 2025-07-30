@@ -7,7 +7,7 @@ import FormGenerator from "@/components/FormGenerator";
 import UpgradeAccBtn from "@/components/navigation/UpgradeAccBtn";
 
 export default function AdminLayout({
-  children,
+  children
 }: {
   children: React.ReactNode;
 }) {
@@ -18,29 +18,29 @@ export default function AdminLayout({
       {
         title: "My Forms",
         href: "/view-forms",
-        icon: "library",
+        icon: "library"
       },
       {
         title: "Results",
         href: "/results",
-        icon: "list",
+        icon: "list"
       },
       {
         title: "Analytics",
         href: "/analytics",
-        icon: "lineChart",
+        icon: "lineChart"
       },
       {
         title: "Charts",
         href: "/charts",
-        icon: "pieChart",
+        icon: "pieChart"
       },
       {
         title: "Settings",
         href: "/settings",
-        icon: "settings",
-      },
-    ],
+        icon: "settings"
+      }
+    ]
   };
   return (
     <div className="flex min-h-screen flex-col">
@@ -54,7 +54,7 @@ export default function AdminLayout({
           <header className="flex items-center">
             <h1 className="text-4xl m-5 p-4 font-semibold">Dashboard</h1>
             <SessionProvider>
-              <FormGenerator />
+              <FormGenerator chat={false} />
             </SessionProvider>
           </header>
           <hr className="" />
