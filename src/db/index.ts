@@ -5,6 +5,7 @@ import { type PostgresJsDatabase } from "drizzle-orm/postgres-js";
 
 declare global {
   // eslint-disbale-next-line no-var -- only var works here
+  // eslint-disable-next-line no-var
   var db: PostgresJsDatabase<typeof schema> | undefined;
 }
 

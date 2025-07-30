@@ -14,19 +14,19 @@ const ResultDisplay = async ({ formId }: Props) => {
     with: {
       questions: {
         with: {
-          fieldOptions: true,
-        },
+          fieldOptions: true
+        }
       },
       submissions: {
         with: {
           answers: {
             with: {
-              fieldOption: true,
-            },
-          },
-        },
-      },
-    },
+              fieldOption: true
+            }
+          }
+        }
+      }
+    }
   });
 
   if (!form) return null;

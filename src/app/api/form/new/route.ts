@@ -7,10 +7,10 @@ export async function POST(request: Request): Promise<Response> {
   const newFormSubmission = await db
     .insert(formSubmissions)
     .values({
-      formId: data.formId,
+      formId: data.formId
     })
     .returning({
-      insertedId: formSubmissions.id,
+      insertedId: formSubmissions.id
     });
 
   const [{ insertedId }] = newFormSubmission;
@@ -23,14 +23,13 @@ export async function POST(request: Request): Promise<Response> {
           value: answer.value,
           formSubmissionId: insertedId,
           questionId: answer.questionId,
-          fieldOptionsId: answer.fieldOptionsId,
+          fieldOptionsId: answer.fieldOptionsId
         })
         .returning({
-          answerId: dbAnswers.id,
+          answerId: dbAnswers.id
         });
     }
   });
 
   return Response.json({ formSubmissionsId: insertedId }, { status: 200 });
 }
-

@@ -6,7 +6,7 @@ import { auth } from "@/auth";
 import Form from "@/components/forms/Form";
 
 const page = async ({
-  params,
+  params
 }: {
   params: {
     formId: string;
@@ -24,10 +24,10 @@ const page = async ({
     with: {
       questions: {
         with: {
-          fieldOptions: true,
-        },
-      },
-    },
+          fieldOptions: true
+        }
+      }
+    }
   });
 
   if (session?.user?.id !== form?.userId) {

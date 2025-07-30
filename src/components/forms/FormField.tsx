@@ -5,7 +5,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from "@/components/ui/select";
 import { FormControl } from "../ui/form";
 import { Switch } from "@/components/ui/switch";
@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import {
   QuestionSelectModel,
-  FieldOptionsSelectModel,
+  FieldOptionsSelectModel
 } from "@/app/types/form-types";
 import { Label } from "@/components/ui/label";
 
@@ -25,7 +25,7 @@ type Props = {
   onChange: (value?: string | React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-const FormField = ({ element, value, onChange }: Props) => {
+const FormField = ({ element, onChange }: Props) => {
   if (!element) return null;
 
   const components = {
@@ -38,7 +38,7 @@ const FormField = ({ element, value, onChange }: Props) => {
           <SelectValue placeholder="Select and option" />
         </SelectTrigger>
         <SelectContent>
-          {element.fieldOptions.map((option, index) => (
+          {element.fieldOptions.map((option) => (
             <SelectItem
               key={`${option.text} ${option.value}`}
               value={`answerId_${option.id}`}
@@ -51,7 +51,7 @@ const FormField = ({ element, value, onChange }: Props) => {
     ),
     RadioGroup: () => (
       <RadioGroup onValueChange={onChange}>
-        {element.fieldOptions.map((option, index) => (
+        {element.fieldOptions.map((option) => (
           <div
             key={`${option.text} ${option.value}`}
             className="flex items-center space-x-2"
@@ -66,7 +66,7 @@ const FormField = ({ element, value, onChange }: Props) => {
           </div>
         ))}
       </RadioGroup>
-    ),
+    )
   };
 
   return element.fieldType && components[element.fieldType]

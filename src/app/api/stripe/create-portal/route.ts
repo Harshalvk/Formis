@@ -4,23 +4,23 @@ import { users } from "@/db/schema";
 import { stripe } from "@/lib/stripe";
 import { eq } from "drizzle-orm";
 
-export async function POST(req: Request) {
+export async function POST() {
   const session = await auth();
   const userId = session?.user?.id;
 
   if (!userId) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401,
+      status: 401
     });
   }
 
   const user = await db.query.users.findFirst({
-    where: eq(users.id, userId),
+    where: eq(users.id, userId)
   });
 
   if (!user) {
     return new Response(JSON.stringify({ error: "User not found" }), {
-      status: 404,
+      status: 404
     });
   }
 
@@ -34,8 +34,8 @@ export async function POST(req: Request) {
       };
     } = {
       metadata: {
-        dbId: userId,
-      },
+        dbId: userId
+      }
     };
 
     const response = await stripe.customers.create(customerData);
@@ -46,7 +46,7 @@ export async function POST(req: Request) {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
   const url = await stripe.billingPortal.sessions.create({
     customer: customer.id,
-    return_url: `${baseUrl}/settings`,
+    return_url: `${baseUrl}/settings`
   });
 
   return new Response(JSON.stringify({ url }), { status: 200 });

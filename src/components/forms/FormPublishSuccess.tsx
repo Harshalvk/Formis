@@ -4,7 +4,7 @@ import {
   DialogContent,
   DialogTitle,
   DialogDescription,
-  DialogHeader,
+  DialogHeader
 } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
 import { CopyIcon, Link2Icon } from "lucide-react";
@@ -23,7 +23,7 @@ const FormPublishSuccess = (props: Props) => {
     navigator.clipboard
       .writeText(baseUrl + "/forms/" + props.formId)
       .then(() => toast.success("Copied to clipborad"))
-      .catch((error) => alert("Failed to copy to clipboard"));
+      .catch(() => alert("Failed to copy to clipboard"));
   };
 
   return (

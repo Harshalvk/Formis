@@ -6,7 +6,7 @@ import {
   primaryKey,
   integer,
   serial,
-  pgEnum,
+  pgEnum
 } from "drizzle-orm/pg-core";
 import type { AdapterAccountType } from "next-auth/adapters";
 import { relations } from "drizzle-orm";
@@ -16,7 +16,7 @@ export const formElements = pgEnum("field_type", [
   "Select",
   "Input",
   "Textarea",
-  "Switch",
+  "Switch"
 ]);
 
 export const users = pgTable("user", {
@@ -28,7 +28,7 @@ export const users = pgTable("user", {
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
   stripeCustomerId: text("stripeCustomerId"),
-  subscribed: boolean("subscribed"),
+  subscribed: boolean("subscribed")
 });
 
 export const accounts = pgTable(
@@ -46,13 +46,13 @@ export const accounts = pgTable(
     token_type: text("token_type"),
     scope: text("scope"),
     id_token: text("id_token"),
-    session_state: text("session_state"),
+    session_state: text("session_state")
   },
   (account) => ({
     compoundKey: primaryKey({
-      columns: [account.provider, account.providerAccountId],
-    }),
-  }),
+      columns: [account.provider, account.providerAccountId]
+    })
+  })
 );
 
 export const sessions = pgTable("session", {
@@ -60,7 +60,7 @@ export const sessions = pgTable("session", {
   userId: text("userId")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
-  expires: timestamp("expires", { mode: "date" }).notNull(),
+  expires: timestamp("expires", { mode: "date" }).notNull()
 });
 
 export const verificationTokens = pgTable(
@@ -68,13 +68,13 @@ export const verificationTokens = pgTable(
   {
     identifier: text("identifier").notNull(),
     token: text("token").notNull(),
-    expires: timestamp("expires", { mode: "date" }).notNull(),
+    expires: timestamp("expires", { mode: "date" }).notNull()
   },
   (verificationToken) => ({
     compositePk: primaryKey({
-      columns: [verificationToken.identifier, verificationToken.token],
-    }),
-  }),
+      columns: [verificationToken.identifier, verificationToken.token]
+    })
+  })
 );
 
 export const authenticators = pgTable(
@@ -89,13 +89,13 @@ export const authenticators = pgTable(
     counter: integer("counter").notNull(),
     credentialDeviceType: text("credentialDeviceType").notNull(),
     credentialBackedUp: boolean("credentialBackedUp").notNull(),
-    transports: text("transports"),
+    transports: text("transports")
   },
   (authenticator) => ({
     compositePK: primaryKey({
-      columns: [authenticator.userId, authenticator.credentialID],
-    }),
-  }),
+      columns: [authenticator.userId, authenticator.credentialID]
+    })
+  })
 );
 
 export const forms = pgTable("forms", {
@@ -103,46 +103,46 @@ export const forms = pgTable("forms", {
   name: text("name"),
   description: text("description"),
   userId: text("user_id"),
-  published: boolean("published"),
+  published: boolean("published")
 });
 
 export const formRelations = relations(forms, ({ many, one }) => ({
   questions: many(questions),
   user: one(users, {
     fields: [forms.userId],
-    references: [users.id],
+    references: [users.id]
   }),
-  submissions: many(formSubmissions),
+  submissions: many(formSubmissions)
 }));
 
 export const questions = pgTable("questions", {
   id: serial("id").primaryKey(),
   text: text("text"),
   fieldType: formElements("field_type"),
-  formId: integer("form_id"),
+  formId: integer("form_id")
 });
 
 export const questionsRelations = relations(questions, ({ many, one }) => ({
   form: one(forms, {
     fields: [questions.formId],
-    references: [forms.id],
+    references: [forms.id]
   }),
   fieldOptions: many(fieldOptions),
-  answers: many(answers),
+  answers: many(answers)
 }));
 
 export const fieldOptions = pgTable("field_options", {
   id: serial("id").primaryKey(),
   text: text("text"),
   value: text("value"),
-  questionId: integer("question_id"),
+  questionId: integer("question_id")
 });
 
 export const fieldOptionsRelations = relations(fieldOptions, ({ one }) => ({
   question: one(questions, {
     fields: [fieldOptions.questionId],
-    references: [questions.id],
-  }),
+    references: [questions.id]
+  })
 }));
 
 export const answers = pgTable("answers", {
@@ -150,27 +150,27 @@ export const answers = pgTable("answers", {
   value: text("value"),
   questionId: integer("question_id"),
   formSubmissionId: integer("form_submission_id"),
-  fieldOptionsId: integer("field_options_id"),
+  fieldOptionsId: integer("field_options_id")
 });
 
 export const answerRelations = relations(answers, ({ one }) => ({
   question: one(questions, {
     fields: [answers.questionId],
-    references: [questions.id],
+    references: [questions.id]
   }),
   formSubmission: one(formSubmissions, {
     fields: [answers.formSubmissionId],
-    references: [formSubmissions.id],
+    references: [formSubmissions.id]
   }),
   fieldOption: one(fieldOptions, {
     fields: [answers.fieldOptionsId],
-    references: [fieldOptions.id],
-  }),
+    references: [fieldOptions.id]
+  })
 }));
 
 export const formSubmissions = pgTable("form_submissions", {
   id: serial("id").primaryKey(),
-  formId: integer("form_id"),
+  formId: integer("form_id")
 });
 
 export const formSubmissionRElations = relations(
@@ -178,8 +178,8 @@ export const formSubmissionRElations = relations(
   ({ one, many }) => ({
     form: one(forms, {
       fields: [formSubmissions.formId],
-      references: [forms.id],
+      references: [forms.id]
     }),
-    answers: many(answers),
-  }),
+    answers: many(answers)
+  })
 );

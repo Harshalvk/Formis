@@ -12,7 +12,7 @@ export const getUserForms = async () => {
   }
 
   const userForms = await db.query.forms.findMany({
-    where: eq(forms.userId, userId),
+    where: eq(forms.userId, userId)
   });
 
   return userForms;

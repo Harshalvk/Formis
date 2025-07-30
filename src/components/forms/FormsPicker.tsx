@@ -6,7 +6,7 @@ import {
   SelectGroup,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
@@ -34,7 +34,7 @@ const FormsPicker = ({ options }: FormsPickerProps) => {
 
       return params.toString();
     },
-    [searchParams],
+    [searchParams]
   );
 
   return (
@@ -46,7 +46,7 @@ const FormsPicker = ({ options }: FormsPickerProps) => {
           router.push(pathName + "?" + createQueryString("formId", value));
         }}
       >
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-fit">
           <SelectValue placeholder={options[0].lable} />
         </SelectTrigger>
         <SelectContent>

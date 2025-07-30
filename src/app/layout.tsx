@@ -2,19 +2,15 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Toaster } from "sonner";
-import { Manrope } from "next/font/google";
-
-const manrope = Manrope({
-  subsets: ["latin"],
-});
+import { manrope } from "@/lib/fonts";
 
 export const metadata: Metadata = {
   title: "Formis",
-  description: "AI form generator",
+  description: "AI form generator"
 };
 
 export default function RootLayout({
-  children,
+  children
 }: Readonly<{
   children: React.ReactNode;
 }>) {

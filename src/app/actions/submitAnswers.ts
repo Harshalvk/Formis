@@ -21,7 +21,7 @@ export async function submitAnswers(data: SubmitAnswersData) {
     const newFormSubmissions = await db
       .insert(formSubmissions)
       .values({
-        formId,
+        formId
       })
       .returning({ insertedId: formSubmissions.id });
 
@@ -33,10 +33,10 @@ export async function submitAnswers(data: SubmitAnswersData) {
           .insert(dbAnswers)
           .values({
             formSubmissionId: insertedId,
-            ...answer,
+            ...answer
           })
           .returning({
-            answerId: dbAnswers.id,
+            answerId: dbAnswers.id
           });
       }
     });

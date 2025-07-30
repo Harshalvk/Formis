@@ -5,9 +5,7 @@ import { db } from "@/db";
 import { eq } from "drizzle-orm";
 import { users } from "@/db/schema";
 
-type Props = {};
-
-const page = async (props: Props) => {
+const page = async () => {
   const session = await auth();
 
   if (!session || !session.user || !session.user.id) {
@@ -16,7 +14,7 @@ const page = async (props: Props) => {
   }
 
   const user = await db.query.users.findFirst({
-    where: eq(users.id, session.user.id),
+    where: eq(users.id, session.user.id)
   });
 
   const plan = user?.subscribed ? "premium" : "free";

@@ -1,6 +1,6 @@
 import {
   createSubscription,
-  deleteSubscription,
+  deleteSubscription
 } from "@/app/actions/userSubscriptions";
 import { stripe } from "@/lib/stripe";
 import Stripe from "stripe";
@@ -9,7 +9,7 @@ const relevantEvents = new Set([
   "checkout.session.completed",
   "customer.subscription.updated",
   "customer.subscription.deleted",
-  "customer.subscription.created",
+  "customer.subscription.created"
 ]);
 
 export async function POST(req: Request) {
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
   const event = stripe.webhooks.constructEvent(
     body,
     sig,
-    process.env.STRIPE_WEBHOOK_SECRET!,
+    process.env.STRIPE_WEBHOOK_SECRET!
   );
 
   const data = event.data.object as Stripe.Subscription;
@@ -34,13 +34,13 @@ export async function POST(req: Request) {
     switch (event.type) {
       case "customer.subscription.created": {
         await createSubscription({
-          stripeCustomerId: data.customer as string,
+          stripeCustomerId: data.customer as string
         });
         break;
       }
       case "customer.subscription.deleted": {
         await deleteSubscription({
-          stripeCustomerId: data.customer as string,
+          stripeCustomerId: data.customer as string
         });
         break;
       }

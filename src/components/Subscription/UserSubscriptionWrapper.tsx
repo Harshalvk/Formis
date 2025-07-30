@@ -3,7 +3,7 @@ import { auth } from "@/auth";
 import { getUserSubscription } from "@/app/actions/userSubscriptions";
 import { Button } from "@/components/ui/button";
 import { db } from "@/db";
-import { users, forms } from "@/db/schema";
+import { forms } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { Lock } from "lucide-react";
 import { MAX_FREE_FORMS } from "@/lib/utils";
@@ -20,7 +20,7 @@ const UserSubscriptionWrapper = async ({ children }: Props) => {
   }
   const subscription = await getUserSubscription({ userId });
   const userForms = await db.query.forms.findMany({
-    where: eq(forms.userId, userId),
+    where: eq(forms.userId, userId)
   });
   const userFormsCount = userForms.length;
 

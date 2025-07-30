@@ -1,5 +1,5 @@
 import { z } from "zod";
 
 export const promptSchema = z.object({
-  prompt: z.string(),
+  prompt: z.string()
 });

@@ -20,9 +20,9 @@ const SubscribeBtn = ({ userId, price }: Props) => {
       const { sessionId } = await fetch("/api/stripe/checkout-session", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify({ price }),
+        body: JSON.stringify({ price })
       }).then((res) => res.json());
 
       console.log("sessionId:", sessionId);

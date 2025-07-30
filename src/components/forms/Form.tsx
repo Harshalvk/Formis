@@ -1,23 +1,24 @@
 "use client";
+
 import React, { useState } from "react";
 import {
   FormSelectMode,
   QuestionSelectModel,
-  FieldOptionsSelectModel,
+  FieldOptionsSelectModel
 } from "@/types/form-types";
 import {
   Form as FormComponent,
   FormField as ShadcnFormField,
   FormItem,
   FormLabel,
-  FormControl,
+  FormControl
 } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
+import { FieldValues, useForm } from "react-hook-form";
 import { Button } from "../ui/button";
 import FormField from "./FormField";
 import { publishForm } from "@/app/actions/mutateForm";
 import FormPublishSuccess from "./FormPublishSuccess";
-import { submitAnswers, type Answer } from "@/app/actions/submitAnswers";
+import { type Answer } from "@/app/actions/submitAnswers";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -44,7 +45,7 @@ const Form = (props: Props) => {
     setSuccessDialogOpen(open);
   };
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: FieldValues) => {
     if (editMode) {
       await publishForm(props.form.id);
       setSuccessDialogOpen(true);
@@ -64,7 +65,7 @@ const Form = (props: Props) => {
         answers.push({
           questionId: id,
           fieldOptionsId,
-          value: textValue,
+          value: textValue
         });
       }
 
@@ -74,9 +75,9 @@ const Form = (props: Props) => {
       const response = await fetch(`${baseUrl}/api/form/new`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify({ formId: props.form.id, answers }),
+        body: JSON.stringify({ formId: props.form.id, answers })
       });
 
       if (response.status === 200) {

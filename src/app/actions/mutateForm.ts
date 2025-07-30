@@ -7,13 +7,15 @@ import { eq, InferInsertModel } from "drizzle-orm";
 type Form = InferInsertModel<typeof forms>;
 type Question = InferInsertModel<typeof dbQuestions>;
 type FieldOptions = InferInsertModel<typeof fieldOptions>;
-
+type QuestionWithFieldOptions = Question & {
+  fieldOptions?: FieldOptions[];
+};
 interface SaveFormData extends Form {
   questions: Array<Question & { fieldOptions?: FieldOptions[] }>;
 }
 
 export async function saveForm(data: SaveFormData) {
-  const { name, description, questions } = data;
+  const { name, description } = data;
   const session = await auth();
   const userId = session?.user?.id;
 
@@ -23,20 +25,22 @@ export async function saveForm(data: SaveFormData) {
       name,
       description,
       userId,
-      published: false,
+      published: false
     })
     .returning({ insertedId: forms.id });
 
   const formId = newForm[0].insertedId;
 
-  const newQuestions = data.questions.map((question: any) => {
-    return {
-      text: question.text,
-      fieldType: question.fieldType,
-      fieldOptions: question.fieldOptions,
-      formId,
-    };
-  });
+  const newQuestions = data.questions.map(
+    (question: QuestionWithFieldOptions) => {
+      return {
+        text: question.text,
+        fieldType: question.fieldType,
+        fieldOptions: question.fieldOptions,
+        formId
+      };
+    }
+  );
 
   await db.transaction(async (tx) => {
     for (const question of newQuestions) {
@@ -46,11 +50,11 @@ export async function saveForm(data: SaveFormData) {
         .returning({ questionId: dbQuestions.id });
       if (question.fieldOptions && question.fieldOptions.length > 0) {
         await tx.insert(fieldOptions).values(
-          question.fieldOptions.map((option: any) => ({
+          question.fieldOptions.map((option: FieldOptions) => ({
             text: option.text,
             value: option.value,
-            questionId,
-          })),
+            questionId
+          }))
         );
       }
     }

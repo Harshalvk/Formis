@@ -3,22 +3,20 @@ import { auth } from "@/auth";
 import { db } from "@/db/index";
 import { eq } from "drizzle-orm";
 import { users } from "@/db/schema";
-import Stripe from "stripe";
 
 export async function POST(req: Request) {
   const { price, quantity = 1 } = await req.json();
   const userSession = await auth();
   const userId = userSession?.user?.id;
-  const userEmail = userSession?.user?.email;
 
   if (!userId) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401,
+      status: 401
     });
   }
 
   const user = await db.query.users.findFirst({
-    where: eq(users.id, userId),
+    where: eq(users.id, userId)
   });
 
   let customer;
@@ -31,8 +29,8 @@ export async function POST(req: Request) {
       };
     } = {
       metadata: {
-        dbId: userId,
-      },
+        dbId: userId
+      }
     };
 
     const response = await stripe.customers.create(customerData);
@@ -42,7 +40,7 @@ export async function POST(req: Request) {
     await db
       .update(users)
       .set({
-        stripeCustomerId: customer.id,
+        stripeCustomerId: customer.id
       })
       .where(eq(users.id, userId));
   }
@@ -58,32 +56,31 @@ export async function POST(req: Request) {
       line_items: [
         {
           price,
-          quantity,
-        },
+          quantity
+        }
       ],
-      mode: "subscription",
+      mode: "subscription"
     });
 
     if (session) {
       return new Response(JSON.stringify({ sessionId: session.id }), {
-        status: 200,
+        status: 200
       });
     } else {
       return new Response(
         JSON.stringify({ error: "Failed to create session" }),
         {
-          status: 500,
-        },
+          status: 500
+        }
       );
     }
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error creating checkout session", error);
     return new Response(
       JSON.stringify({
-        error: "Internal server error",
-        details: error.message,
+        error: "Internal server error"
       }),
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

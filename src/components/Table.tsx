@@ -1,12 +1,7 @@
 "use client";
+
 import * as React from "react";
-import {
-  forms,
-  answers,
-  formSubmissions,
-  fieldOptions,
-  questions,
-} from "@/db/schema";
+import { answers, formSubmissions, fieldOptions, questions } from "@/db/schema";
 import { InferSelectModel } from "drizzle-orm";
 import {
   Table as ShadcnTable,
@@ -15,14 +10,14 @@ import {
   TableFooter,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow
 } from "@/components/ui/table";
 
 import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
-  useReactTable,
+  useReactTable
 } from "@tanstack/react-table";
 
 type FieldOption = InferSelectModel<typeof fieldOptions>;
@@ -44,7 +39,7 @@ interface TableProps {
   columns: Question[];
 }
 
-const columnHelper = createColumnHelper<any>();
+const columnHelper = createColumnHelper<FormSubmissions>();
 
 export function Table(props: TableProps) {
   const { data } = props;
@@ -52,33 +47,35 @@ export function Table(props: TableProps) {
   const columns = [
     columnHelper.accessor("id", {
       header: () => <p>ID</p>,
-      cell: (info) => info.getValue(),
+      cell: (info) => info.getValue()
     }),
-    ...props.columns.map((question: Question, index: number) => {
+    ...props.columns.map((question: Question) => {
       return columnHelper.accessor(
         (row) => {
-          const answer: Answer = row.answers.find(
-            (answer: Answer) => answer.questionId === question.id,
+          const answer: Answer | undefined = row.answers.find(
+            (answer: Answer) => answer.questionId === question.id
           );
 
-          return answer.fieldOption ? answer.fieldOption.text : answer.value;
+          return answer?.fieldOption ? answer.fieldOption.text : answer?.value;
         },
         {
           header: () => question.text,
           id: question.id.toString(),
-          cell: (info) => <p>{info.renderValue()}</p>,
-        },
+          cell: (info) => <p>{info.renderValue()}</p>
+        }
       );
-    }),
+    })
   ];
 
   const table = useReactTable({
     data,
     columns,
-    getCoreRowModel: getCoreRowModel(),
+    getCoreRowModel: getCoreRowModel()
   });
 
-  console.log("TABLE_DATA::", data);
+  if (process.env.NODE_ENV === "development") {
+    console.log("TABLE_DATA::", data);
+  }
 
   return (
     <div className="p-2 mt-4">
@@ -93,7 +90,7 @@ export function Table(props: TableProps) {
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
-                          header.getContext(),
+                          header.getContext()
                         )}
                   </TableHead>
                 ))}
@@ -120,7 +117,7 @@ export function Table(props: TableProps) {
                       ? null
                       : flexRender(
                           header.column.columnDef.footer,
-                          header.getContext(),
+                          header.getContext()
                         )}
                   </TableHead>
                 ))}

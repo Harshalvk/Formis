@@ -6,7 +6,7 @@ import {
   Settings,
   UserRoundCog,
   List,
-  type IconNode as LucideIcon,
+  type IconNode as LucideIcon
 } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -17,5 +17,5 @@ export const Icons = {
   settings2: Settings2,
   settings: Settings,
   userRoundCog: UserRoundCog,
-  list: List,
+  list: List
 };

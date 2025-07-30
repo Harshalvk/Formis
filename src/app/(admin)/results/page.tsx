@@ -6,7 +6,7 @@ import FormsPicker from "@/components/forms/FormsPicker";
 import ResultDisplay from "@/components/ResultDisplay";
 
 const page = async ({
-  searchParams,
+  searchParams
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) => {
@@ -19,7 +19,7 @@ const page = async ({
   const selectOptions = userForms.map((form) => {
     return {
       lable: form.name,
-      value: form.id,
+      value: form.id
     };
   });
 

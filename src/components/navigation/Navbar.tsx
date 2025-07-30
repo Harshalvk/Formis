@@ -29,7 +29,7 @@ const Navbar = ({ items }: DashboradNavProps) => {
                   isActive ? "bg-accent" : "transparent",
                   item.disabled
                     ? "cursor-not-allowed opacity-80"
-                    : "cursor-pointer",
+                    : "cursor-pointer"
                 )}
               >
                 <Icon className="w-4 h-4 mr-2" />
