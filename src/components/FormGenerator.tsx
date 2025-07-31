@@ -2,7 +2,10 @@
 import React, { useState, useEffect } from "react";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle
 } from "@/components/ui/dialog";
@@ -11,13 +14,14 @@ import { Textarea } from "./ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { generateForm } from "@/actions/generateForm";
 import { useFormStatus } from "react-dom";
-import { ArrowUp, LoaderCircle, Plus } from "lucide-react";
+import { ArrowUp, Loader2, LoaderCircle, Plus } from "lucide-react";
 import { navigate } from "@/app/actions/navigateToForm";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { promptSchema } from "@/lib/validator/prompt.vaildator";
 import { Form, FormField } from "@/components/ui/form";
 import { formPrompts } from "@/lib/constants";
+import { useMutation } from "@tanstack/react-query";
 
 export function SubmitButton() {
   const { pending } = useFormStatus();
@@ -37,6 +41,22 @@ const FormGenerator = ({ chat }: { chat?: boolean }) => {
   const [phraseIndex, setPhraseIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
   const [deleting, setDeleting] = useState(false);
+  const [failedFormGeneration, setFailedFormGeneration] = useState(false);
+
+  const {
+    mutateAsync: generateFormMutation,
+    isPending: isGenerateFormPending
+  } = useMutation({
+    mutationFn: generateForm,
+    onSuccess: ({ data }) => {
+      if (data?.formId) {
+        navigate(data?.formId);
+      }
+    },
+    onError: () => {
+      setFailedFormGeneration(true);
+    }
+  });
 
   const form = useForm<z.infer<typeof promptSchema>>({
     resolver: zodResolver(promptSchema),
@@ -92,15 +112,41 @@ const FormGenerator = ({ chat }: { chat?: boolean }) => {
     return () => clearTimeout(timeout);
   }, [charIndex, deleting, phraseIndex, typewriterPhrases]);
 
+  useEffect(() => {
+    const setFailedFormGenerationTimeout = setTimeout(() => {
+      setFailedFormGeneration(false);
+    }, 10000);
+
+    return () => {
+      clearTimeout(setFailedFormGenerationTimeout);
+    };
+  }, []);
+
   async function onSubmit(values: z.infer<typeof promptSchema>) {
-    const form = await generateForm({ data: values });
-    if (form.data?.formId) {
-      navigate(form.data.formId);
-    }
+    await generateFormMutation({ data: values });
   }
 
   return (
     <>
+      <Dialog
+        open={failedFormGeneration}
+        onOpenChange={setFailedFormGeneration}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>🔴 Form Generation Failed</DialogTitle>
+            <DialogDescription>
+              Form generation request is failed, please try again or sometime
+              later.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="secondary">Close</Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       {chat ? (
         <div className="w-full flex flex-col items-center">
           <Form {...form}>
@@ -114,6 +160,7 @@ const FormGenerator = ({ chat }: { chat?: boolean }) => {
                 render={({ field }) => (
                   <Textarea
                     {...field}
+                    disabled={isGenerateFormPending}
                     placeholder={`Ask Formis to create a ${placeholder}`}
                     spellCheck={false}
                     className="flex-1 font-semibold w-full text-sm md:text-base border-none h-28 resize-none rounded-xl focus-visible:ring-0 focus-visible:ring-offset-0 text-foreground/80"
@@ -122,11 +169,16 @@ const FormGenerator = ({ chat }: { chat?: boolean }) => {
               />
               <div className="w-full flex items-center justify-end">
                 <Button
+                  disabled={isGenerateFormPending}
                   className="rounded-full px-3 self-end"
                   variant={"outline"}
                   type="submit"
                 >
-                  <ArrowUp />
+                  {isGenerateFormPending ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    <ArrowUp />
+                  )}
                 </Button>
               </div>
             </form>
@@ -139,7 +191,7 @@ const FormGenerator = ({ chat }: { chat?: boolean }) => {
                   <p
                     key={index}
                     onClick={() => setValue("prompt", formPrompt.prompt)}
-                    className="text-xs whitespace-nowrap hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-all py-1.5 px-3 font-semibold rounded-full border cursor-pointer flex items-center gap-2 "
+                    className="text-xs whitespace-nowrap hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-all py-1.5 px-3 font-semibold rounded-full border cursor-pointer flex items-center gap-2"
                   >
                     <Icon size={17} />
                     {formPrompt.title}
@@ -160,10 +212,7 @@ const FormGenerator = ({ chat }: { chat?: boolean }) => {
               <DialogTitle>Create new form</DialogTitle>
             </DialogHeader>
             <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="z-50 w-full border rounded-3xl p-2"
-              >
+              <form onSubmit={form.handleSubmit(onSubmit)}>
                 <FormField
                   control={form.control}
                   name="prompt"
@@ -177,14 +226,8 @@ const FormGenerator = ({ chat }: { chat?: boolean }) => {
                     />
                   )}
                 />
-                <div className="w-full flex items-center justify-end">
-                  <Button
-                    className="rounded-full px-3 self-end"
-                    variant={"outline"}
-                    type="submit"
-                  >
-                    <ArrowUp />
-                  </Button>
+                <div className="w-full flex items-center justify-end mt-2">
+                  <SubmitButton />
                 </div>
               </form>
             </Form>
