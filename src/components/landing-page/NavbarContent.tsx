@@ -6,8 +6,10 @@ import Logo from "../Logo";
 import Link from "next/link";
 import UserAccount from "../UserAccount";
 import { motion } from "motion/react";
+import { Button } from "../ui/button";
+import { signIn } from "next-auth/react";
 
-const NavbarContent = ({ user }: { user: User }) => {
+const NavbarContent = ({ user }: { user: User | undefined }) => {
   return (
     <motion.nav
       initial={{
@@ -37,7 +39,17 @@ const NavbarContent = ({ user }: { user: User }) => {
           </div>
         </div>
         <div>
-          <UserAccount user={user} />
+          {user ? (
+            <UserAccount user={user} />
+          ) : (
+            <Button
+              onClick={() => signIn("google")}
+              variant={"outline"}
+              className="rounded-full"
+            >
+              Sign In
+            </Button>
+          )}
         </div>
       </div>
     </motion.nav>
