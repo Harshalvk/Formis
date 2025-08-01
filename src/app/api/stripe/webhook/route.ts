@@ -3,6 +3,7 @@ import {
   deleteSubscription
 } from "@/app/actions/userSubscriptions";
 import { stripe } from "@/lib/stripe";
+import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
 const relevantEvents = new Set([
@@ -16,7 +17,12 @@ export async function POST(req: Request) {
   const body = await req.text();
   const sig = req.headers.get("stripe-signature") as string;
 
-  if (!sig) return null;
+  if (!sig) {
+    return NextResponse.json(
+      { msg: "Stripe Signature not found" },
+      { status: 403 }
+    );
+  }
 
   if (!process.env.STRIPE_WEBHOOK_SECRET) {
     throw new Error("STRIPE_WEBHOOK_SECRET is not set");
