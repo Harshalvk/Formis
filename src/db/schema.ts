@@ -12,7 +12,6 @@ import {
 import type { AdapterAccountType } from "next-auth/adapters";
 import { relations } from "drizzle-orm";
 
-
 export const formElements = pgEnum("field_type", [
   "RadioGroup",
   "Select",
@@ -156,7 +155,7 @@ export const fieldOptions = pgTable("field_options", {
   text: text("text"),
   value: text("value"),
   questionId: integer("question_id"),
-  // added for the drag & drop editor 
+  // added for the drag & drop editor
   order: integer("order").default(0).notNull()
 });
 
