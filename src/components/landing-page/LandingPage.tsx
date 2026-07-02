@@ -25,7 +25,7 @@ const LandingPage = () => {
 
   useEffect(() => {
     startAnimating();
-  }, []);
+  }, [startAnimating]);
 
   const animation = {
     initial: { y: 8, opacity: 0, filter: "blur(10px)" }
