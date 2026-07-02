@@ -6,17 +6,27 @@ import {
   primaryKey,
   integer,
   serial,
-  pgEnum
+  pgEnum,
+  jsonb
 } from "drizzle-orm/pg-core";
 import type { AdapterAccountType } from "next-auth/adapters";
 import { relations } from "drizzle-orm";
+
 
 export const formElements = pgEnum("field_type", [
   "RadioGroup",
   "Select",
   "Input",
   "Textarea",
-  "Switch"
+  "Switch",
+  "Email",
+  "Number",
+  "Date",
+  "Checkbox",
+  "FileUpload",
+  "Rating",
+  "NPS",
+  "Ranking"
 ]);
 
 export const users = pgTable("user", {
@@ -119,7 +129,13 @@ export const questions = pgTable("questions", {
   id: serial("id").primaryKey(),
   text: text("text"),
   fieldType: formElements("field_type"),
-  formId: integer("form_id")
+  formId: integer("form_id"),
+  // added for the drag & drop editor
+  order: integer("order").default(0).notNull(),
+  required: boolean("required").default(false),
+  placeholder: text("placeholder"),
+  description: text("description"),
+  config: jsonb("config").$type<Record<string, unknown>>()
 });
 
 export const questionsRelations = relations(questions, ({ many, one }) => ({
@@ -128,14 +144,20 @@ export const questionsRelations = relations(questions, ({ many, one }) => ({
     references: [forms.id]
   }),
   fieldOptions: many(fieldOptions),
-  answers: many(answers)
+  answers: many(answers),
+  order: one(fieldOptions, {
+    fields: [questions.order],
+    references: [fieldOptions.order]
+  })
 }));
 
 export const fieldOptions = pgTable("field_options", {
   id: serial("id").primaryKey(),
   text: text("text"),
   value: text("value"),
-  questionId: integer("question_id")
+  questionId: integer("question_id"),
+  // added for the drag & drop editor 
+  order: integer("order").default(0).notNull()
 });
 
 export const fieldOptionsRelations = relations(fieldOptions, ({ one }) => ({

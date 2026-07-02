@@ -15,6 +15,13 @@
       "when": 1736428477156,
       "tag": "0001_sweet_talon",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1783261454558,
+      "tag": "0002_tiresome_firedrake",
+      "breakpoints": true
     }
   ]
 }
