@@ -51,22 +51,37 @@ const Form = (props: Props) => {
       setSuccessDialogOpen(true);
     } else {
       const answers: Answer[] = [];
+
       for (const [questionId, value] of Object.entries(data)) {
         const id = parseInt(questionId.replace("question_", ""));
-        let fieldOptionsId = null;
-        let textValue = null;
+        const question = props.form.questions.find((q) => q.id === id);
+        const isRanked = question?.fieldType === "Ranking";
 
-        if (typeof value == "string" && value.includes("answerId_")) {
-          fieldOptionsId = parseInt(value.replace("answerId_", ""));
+        if (Array.isArray(value)) {
+          // Checkbox (multi-select) and Ranking both submit arrays of
+          // "answerId_x" strings — Ranking additionally cares about order.
+          value.forEach((v: string, index: number) => {
+            if (typeof v === "string" && v.startsWith("answerId_")) {
+              answers.push({
+                questionId: id,
+                fieldOptionsId: parseInt(v.replace("answerId_", "")),
+                value: isRanked ? String(index + 1) : null
+              });
+            }
+          });
+        } else if (typeof value === "string" && value.startsWith("answerId_")) {
+          answers.push({
+            questionId: id,
+            fieldOptionsId: parseInt(value.replace("answerId_", "")),
+            value: null
+          });
         } else {
-          textValue = value as string;
+          answers.push({
+            questionId: id,
+            fieldOptionsId: null,
+            value: (value as string) ?? null
+          });
         }
-
-        answers.push({
-          questionId: id,
-          fieldOptionsId,
-          value: textValue
-        });
       }
 
       const baseUrl =
@@ -111,7 +126,15 @@ const Form = (props: Props) => {
                     <FormItem>
                       <FormLabel className="text-base mt-3">
                         {index + 1}. {question.text}
+                        {question.required && (
+                          <span className="text-destructive"> *</span>
+                        )}
                       </FormLabel>
+                      {question.description && (
+                        <p className="text-xs text-muted-foreground">
+                          {question.description}
+                        </p>
+                      )}
                       <FormControl>
                         <FormField
                           element={question}
