@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { forms } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { auth } from "@/auth";
+import type { EditableForm } from "@/components/forms/editor/types";
 import Form from "@/components/forms/Form";
 
 const page = async ({
@@ -23,8 +24,11 @@ const page = async ({
     where: eq(forms.id, parseInt(formId)),
     with: {
       questions: {
+        orderBy: (questions, { asc }) => [asc(questions.order)],
         with: {
-          fieldOptions: true
+          fieldOptions: {
+            orderBy: (fieldOptions, { asc }) => [asc(fieldOptions.order)]
+          }
         }
       }
     }
@@ -39,9 +43,15 @@ const page = async ({
   }
 
   return (
-    <>
-      <Form form={form} />
-    </>
+    <div className="p-3">
+      <div className="mb-4">
+        <h1 className="text-2xl font-semibold">{form.name}</h1>
+        {form.description && (
+          <p className="text-muted-foreground">{form.description}</p>
+        )}
+      </div>
+      <Form form={form as unknown as EditableForm} editMode />
+    </div>
   );
 };
 
