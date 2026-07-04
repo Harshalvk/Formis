@@ -3,7 +3,7 @@ import { db } from "@/db";
 import { forms } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { auth } from "@/auth";
-import Form from "@/components/forms/Form";
+import FormEditor from "@/components/forms/editor/FormEditor";
 
 const page = async ({
   params
@@ -40,7 +40,13 @@ const page = async ({
 
   return (
     <>
-      <Form form={form} editMode={true} />
+      <div className="mb-4">
+        <h1 className="text-2xl font-semibold">{form.name}</h1>
+        {form.description && (
+          <p className="text-muted-foreground">{form.description}</p>
+        )}
+      </div>
+      <FormEditor form={form} />
     </>
   );
 };
