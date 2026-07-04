@@ -2,10 +2,58 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import Groq from "groq-sdk";
 import { saveForm } from "./mutateForm";
 import { promptSchema } from "@/lib/validator/prompt.vaildator";
+import { OpenAI } from "openai";
 import { auth, signIn } from "@/auth";
+
+const FieldOptionSchema = z.object({
+  text: z.string(),
+  value: z.string()
+});
+
+const FieldTypeSchema = z.enum([
+  "RadioGroup",
+  "Select",
+  "Input",
+  "Textarea",
+  "Switch"
+]);
+
+const QuestionSchema = z
+  .object({
+    text: z.string(),
+    fieldType: FieldTypeSchema,
+    fieldOptions: z.array(FieldOptionSchema)
+  })
+  .superRefine((data, ctx) => {
+    const requiresOptions =
+      data.fieldType === "RadioGroup" || data.fieldType === "Select";
+
+    if (requiresOptions && data.fieldOptions.length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message:
+          "RadioGroup and Select fields must have at least one field option.",
+        path: ["fieldOptions"]
+      });
+    }
+
+    if (!requiresOptions && data.fieldOptions.length > 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message:
+          "Input, Textarea, and Switch fields must have an empty fieldOptions array.",
+        path: ["fieldOptions"]
+      });
+    }
+  });
+
+const SurveySchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  questions: z.array(QuestionSchema).min(1)
+});
 
 export async function generateForm({
   data
@@ -18,37 +66,65 @@ export async function generateForm({
     await signIn("google");
   }
 
-  const promptExplanation =
-    "PLEASE DO NOT START YOUR RESPONSE WITH WORDS AND DESCRIPTION LIKE 'Here is' etc, ALSO DO NOT WRAP THE RESPONSE INSIDE `` like this ```YOUR_RESPONSE```. MAKE SURE EACH KEY VALUE PAIR SHOULD BE WRAP IN DOUBLE QUOTES. Based on the description, generate a survey object with 3 fields: name(string) for the form, description(string) of the form and a questions array where every element has 2 fields: text and the fieldType and fieldType can be of these options RadioGroup, Select, Input, Textarea, Switch; and return it in json format. For RadioGroup, and Select types also return fieldOptions array with text(text should wrap in double quotes) and value(value should wrap in double quotes) fields. For example, for RadioGroup, and Select types, the field options array can be [{text: 'Yes', value: 'yes'}, {text: 'No', value: 'no'}] and for Input, Textarea, and Switch types, the field options array can be empty. For example, for Input, Textarea, and Switch types, the field options array can be [].";
+  const oai = new OpenAI({
+    apiKey: process.env.GROQ_API_KEY,
+    baseURL: "https://api.groq.com/openai/v1"
+  });
+
+  const systemPrompt = `You generate survey/form definitions as a single JSON object and nothing else.
+Return ONLY valid JSON matching this exact shape (no markdown fences, no preamble):
+{
+  "name": string,
+  "description": string,
+  "questions": [
+    {
+      "text": string,
+      "fieldType": "RadioGroup" | "Select" | "Input" | "Textarea" | "Switch",
+      "fieldOptions": [{ "text": string, "value": string }]
+    }
+  ]
+}
+Rules:
+- RadioGroup and Select MUST have at least one item in fieldOptions.
+- Input, Textarea, and Switch MUST have an empty fieldOptions array ([]).
+- All keys and string values must use double quotes.
+- Output must be valid JSON parseable by JSON.parse — no trailing commas, no comments.`;
 
   try {
-    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-    const response = await groq.chat.completions.create({
-      model: "moonshotai/kimi-k2-instruct",
+    const completion = await oai.chat.completions.create({
+      model: "openai/gpt-oss-20b",
+      response_format: { type: "json_object" },
       messages: [
-        {
-          role: "user",
-          content: `${data.prompt} ${promptExplanation}`
-        }
+        { role: "system", content: systemPrompt },
+        { role: "user", content: data.prompt }
       ]
     });
 
-    if (process.env.NODE_ENV === "development") {
-      console.log("AI: RESPONSE", response.choices[0].message);
+    const content = completion.choices[0]?.message?.content;
+
+    if (!content) {
+      return { message: "Failed to create form" };
     }
 
-    if (!response.choices[0].message["content"]) {
-      return {
-        message: "failed"
-      };
+    let parsedJson: unknown;
+    try {
+      parsedJson = JSON.parse(content);
+    } catch {
+      console.log("Model did not return valid JSON:", content);
+      return { message: "Failed to create form" };
     }
 
-    const paresRes = JSON.parse(response.choices[0].message["content"]);
+    const result = SurveySchema.safeParse(parsedJson);
+
+    if (!result.success) {
+      console.log("Schema validation failed:", result.error.flatten());
+      return { message: "Failed to create form" };
+    }
 
     const dbFormId = await saveForm({
-      name: paresRes.name,
-      description: paresRes.description,
-      questions: paresRes.questions
+      name: result.data.name,
+      description: result.data.description,
+      questions: result.data.questions
     });
 
     revalidatePath("/");
